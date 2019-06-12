@@ -8,11 +8,9 @@ import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Signin from './components/Signin/Signin';
 import Register from './components/Register/Register';
 import Particles from 'react-particles-js';
-import Clarifai from 'clarifai';
+// import Clarifai from 'clarifai'; //we moved to back-end
 
-const app = new Clarifai.App({
- apiKey: '715143c80efb47db8d8da45818a1948b'
-});
+
 
 
 const particleOptions = {
@@ -82,7 +80,7 @@ class App extends Component {
   }
 
   displayFaceBox = (box)=>{
-    console.log(box);
+    // console.log(box);
     this.setState({box:box});
   }
 
@@ -92,9 +90,16 @@ class App extends Component {
 
   onPictureSubmit = ()=>{
     this.setState({imageUrl: this.state.input}) //when users click submit, send input as image url.
-    app.models.predict(
-      Clarifai.FACE_DETECT_MODEL, 
-      this.state.input)
+    //need to fetch and post in order to get our response from Clarifai
+    fetch('http://localhost:3000/imageurl', {
+      method: 'post',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    })
+    //transfer response data to json
+    .then(clarifaiRes => clarifaiRes.json())
     //calculate and send data value into displayFaceBox()
     .then(response => {
       //if we get response, we want to fetch the backend (increasing entries)
@@ -112,6 +117,7 @@ class App extends Component {
           this.setState(Object.assign(this.state.user, {entries: count}))
         })
       }
+      //send data to calculateFaceLocation function which we created and display the location
       this.displayFaceBox(this.calculateFaceLocation(response))})
     .catch(err => console.log(err));
   }
@@ -137,7 +143,7 @@ class App extends Component {
         <Rank name={this.state.user.name} entries={this.state.user.entries} />
         <ImageLinkForm 
           onInputChange={this.onInputChange} 
-          onPictureSubmit={this.onPictureSubmit} 
+          onPictureSubmit={this.onPictureSubmit}
         />
         <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} />
         </div>        

@@ -34,9 +34,10 @@ class Register extends React.Component{
 				password: this.state.regPassword
 			})	
 		})
-		.then(response => response.json())  //instead of using json(), here we need to use text()
+		//here, we get some data (name, email, password) from request by user input and post
+		.then(response => response.json())  //instead of using json(), sometimes we may need to use text()
 		.then(user => {
-			if(user){
+			if(user.id){
 				//if we get the user data, we need to update our database to add those new information
 				//so we need an updateUser function in front end (in App.js as props)
 				this.props.updateUser(user);
