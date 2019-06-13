@@ -91,7 +91,7 @@ class App extends Component {
   onPictureSubmit = ()=>{
     this.setState({imageUrl: this.state.input}) //when users click submit, send input as image url.
     //need to fetch and post in order to get our response from Clarifai
-    fetch('http://localhost:3000/imageurl', {
+    fetch('https://frozen-shore-79981.herokuapp.com/imageurl', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -104,7 +104,7 @@ class App extends Component {
     .then(response => {
       //if we get response, we want to fetch the backend (increasing entries)
       if(response){
-        fetch('http://localhost:3000/image', {
+        fetch('https://frozen-shore-79981.herokuapp.com/image', {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
